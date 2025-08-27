@@ -1,0 +1,8 @@
+flask
+flask-restful
+flask-cors
+sqlalchemy
+psycopg2-binary
+pandas
+gunicorn
+blueprint

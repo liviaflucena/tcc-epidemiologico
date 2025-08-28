@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Evita "flash" de tema: aplica a classe 'dark' antes do React montar
+      (function () {
+        try {
+          const saved = localStorage.getItem("theme");
+          const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const dark = saved ? saved === "dark" : prefersDark;
+          if (dark) document.documentElement.classList.add("dark");
+          else document.documentElement.classList.remove("dark");
+        } catch {}
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

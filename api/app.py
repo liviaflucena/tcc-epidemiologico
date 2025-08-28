@@ -1,11 +1,8 @@
 from flask import Flask
-from flask_cors import CORS
 from helpers.logging import configure_logging
 
 def create_app() -> Flask:
     app = Flask(__name__)
-    CORS(app, resources={r"/": {"origins": "*"}})
-
     # logging
     configure_logging(app)
     app.logger.info("Aplicação inicializada!")

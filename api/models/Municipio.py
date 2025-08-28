@@ -6,4 +6,3 @@ class Municipio(Base):
 
     ibge_id = Column(Integer, primary_key=True)
     uf      = Column(String(2), nullable=False)
-    nome    = Column(String(120))  # opcional

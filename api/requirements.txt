@@ -1,6 +1,6 @@
 flask
 flask-restful
-flask-cors
+requests
 sqlalchemy
 psycopg2-binary
 pandas

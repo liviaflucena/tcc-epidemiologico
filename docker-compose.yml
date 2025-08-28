@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:16
+    container_name: tcc_epi_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dengue_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      retries: 15
+
+  redis:
+    image: redis:7-alpine
+    container_name: tcc_epi_redis
+    ports:
+      - "6379:6379"
+
+  solr:
+    image: solr:9
+    container_name: tcc_epi_solr
+    command: ["solr-precreate", "dengue"]
+    ports:
+      - "8983:8983"
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: tcc_epi_api
+    env_file:
+      - api/.env
+    environment:
+      FLASK_ENV: ${FLASK_ENV:-production}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://postgres:postgres@db:5432/dengue_db}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      SOLR_URL: ${SOLR_URL:-http://solr:8983/solr/dengue}
+      CSV_PATH: /app/data/DENGBR25.csv
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      solr:
+        condition: service_started
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro
+
+volumes:
+  pgdata:

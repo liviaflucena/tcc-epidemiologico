@@ -5,6 +5,7 @@ import MainLayout from "./templates/MainLayout.jsx";
 import Dashboard from "./views/Dashboard.jsx";
 import "./styles/index.css";
 
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider>

@@ -2,6 +2,8 @@ import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend,
 } from "chart.js";
+import "../../styles/index.css";
+
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -11,8 +13,18 @@ export default function UFBarChart({ items }) {
   const data = {
     labels,
     datasets: [
-      { label: "Casos", data: sorted.map(x => x.casos||0) },
-      { label: "Óbitos", data: sorted.map(x => x.obitos||0) },
+      { label: "Casos", 
+        data: sorted.map(x => x.casos||0),
+        tension: 0.25,
+        fill: false,
+         backgroundColor: 'rgba(104, 10, 255, 0.74)'
+       },
+      { label: "Óbitos", 
+        data: sorted.map(x => x.obitos||0),
+        tension: 0.25,
+        fill: false,
+        backgroundColor: 'rgba(255, 0, 0, 0.75)'
+       },
     ],
   };
   const options = {

@@ -18,17 +18,17 @@
 }
 
 :root.dark .card {
-  border-color: color-mix(in oklab, #fff 18%, transparent);
+  border-color: color-mix(in oklab, #3c0404 18%, transparent);
   background: color-mix(in oklab, #fff 6%, transparent);
-  box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  box-shadow: 0 2px 12px rgba(72, 58, 58, 0.25);
 }
 
 /* forms */
 label {
-  @apply block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1;
+  @apply block text-xs font-medium text-zinc-700 dark:text-zinc-400 mb-1;
 }
 .input {
   @apply w-full rounded-md border border-zinc-200/70 dark:border-white/10
          bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100
-         px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500/40;
+         px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500/100;
 }

@@ -1,4 +1,5 @@
 import ThemeToggle from "../components/ui/ThemeToggle.jsx";
+import "../styles/index.css";
 
 export default function MainLayout({ children }) {
   return (
@@ -7,11 +8,11 @@ export default function MainLayout({ children }) {
         <div className="container-max py-4 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3">
             <div className="size-9 rounded-xl bg-indigo-600 text-white grid place-items-center font-bold shadow">
-              DE
+              V I
             </div>
             <div>
-              <div className="text-xs text-zinc-500 dark:text-zinc-400">TCC</div>
-              <div className="text-lg font-semibold">Dashboard Epidemiológico</div>
+              <div className="text-xs text-zinc-500 dark:text-zinc-10"></div>
+              <div className="text-lg font-semibold">Vigilância Inteligente</div>
             </div>
           </a>
           <nav className="flex items-center gap-3 text-sm">
@@ -23,7 +24,7 @@ export default function MainLayout({ children }) {
 
       <main className="container-max py-6">{children}</main>
 
-      <footer className="container-max py-8 text-xs text-zinc-500 dark:text-zinc-400">
+      <footer className="container-max py-8 text-xs text-zinc-500 dark:text-zinc-50">
         Dados: API Flask • Busca UF: Solr • UI: Tailwind • Gráficos: Chart.js
       </footer>
     </div>

@@ -26,14 +26,15 @@ def cases():
 
     try:
         if agg == "state":
-            # Soma por UF (já está como sigla na tabela)
+            # Soma por UF (converte código IBGE para sigla)
             sql = text("""
-                SELECT d.uf AS uf,
+                SELECT e.uf AS uf,
                        SUM(d.casos)  AS casos,
                        SUM(d.obitos) AS obitos
                 FROM dengue_stats d
-                GROUP BY d.uf
-                ORDER BY d.uf
+                JOIN estados e ON d.uf::integer = e.ibge_id
+                GROUP BY e.uf
+                ORDER BY e.uf
             """)
             with engine.connect() as conn:
                 rows = conn.execute(sql).mappings().all()
@@ -50,7 +51,8 @@ def cases():
                        SUM(d.casos)  AS casos,
                        SUM(d.obitos) AS obitos
                 FROM dengue_stats d
-                WHERE d.uf = :uf
+                JOIN estados e ON d.uf::integer = e.ibge_id
+                WHERE e.uf = :uf
                 GROUP BY d.municipio_ibge_id
                 ORDER BY d.municipio_ibge_id
             """)
@@ -75,7 +77,8 @@ def cases():
                        SUM(d.casos)  AS casos,
                        SUM(d.obitos) AS obitos
                 FROM dengue_stats d
-                WHERE d.uf = :uf
+                JOIN estados e ON d.uf::integer = e.ibge_id
+                WHERE e.uf = :uf
                 GROUP BY 1
                 ORDER BY 1
             """)

@@ -7,6 +7,8 @@ import WeekLine from "../components/charts/WeekLine.jsx";
 import UFBarChart from "../components/charts/UFBarChart.jsx";
 import { getCasesAggState, getCasesByWeek } from "../services/api.js";
 import { formatDateBR } from "../services/format.js";
+import BrazilChoroplethRSM from "../components/BrazilChoroplethRSM.jsx";
+
 
 export default function Dashboard() {
   const [uf, setUf] = useState("");
@@ -24,18 +26,18 @@ export default function Dashboard() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const data = await getCasesAggState();
+      const data = await getCasesAggState({ year, month });
       if (!alive) return;
-      setAggState(Array.isArray(data) ? data : []);
+      setAggState(Array.isArray(data) ? data : [year, month]);
     })();
     return () => { alive = false; };
-  }, []);
+  }, [year, month]);
 
   useEffect(() => {
     if (!uf) { setWeekSeries([]); return; }
     let alive = true;
     (async () => {
-      const data = await getCasesByWeek(uf);
+      const data = await getCasesByWeek(uf, { year, month } );
       let rows = Array.isArray(data) ? data : [];
       if (year) rows = rows.filter(r => String(r.semana).slice(0,4) === year);
       if (month) rows = rows.filter(r => String(r.semana).slice(5,7) === month);
@@ -79,12 +81,12 @@ export default function Dashboard() {
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section>
-          <div className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">Top 10 UFs — Casos e Óbitos</div>
+          <div className="mb-3 text-sm text-zinc-900 dark:text-zinc-400">Top 10 UFs — Casos e Óbitos</div>
           <UFBarChart items={aggState} />
         </section>
 
         <section>
-          <div className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="mb-3 text-sm text-zinc-900 dark:text-zinc-400">
             {uf ? `Série semanal — ${uf}${month ? " • mês "+month : ""} • ${year}` : "Selecione uma UF para ver a série semanal"}
           </div>
           <WeekLine points={weekSeries} />
@@ -111,10 +113,33 @@ export default function Dashboard() {
                   <td className="py-2 pr-4">{r.obitos.toLocaleString("pt-BR")}</td>
                 </tr>
               ))}
+              
             </tbody>
+            
           </table>
         </section>
+        
+             
+
+        
+        
       )}
+      {/* Mapa coroplético por estado */}
+  <section className="rounded-xl border border-zinc-200/70 dark:border-white/10 bg-white dark:bg-zinc-900 p-4 shadow-sm">
+    <div className="mb-3 text-sm text-zinc-900 dark:text-zinc-400">
+      Distribuição de Casos por Estado
+    </div>
+    <div style={{ width: "100%", height: "600px" }}>
+      <BrazilChoroplethRSM
+    items={aggState}        // vem do getCasesAggState({ year, month })
+    selectedUf={uf}
+    onSelectUf={setUf}      // clique no mapa muda a UF dos demais gráficos/tabela
+    height="600px"
+    // breaks={[0, 100, 500, 1000, 5000, 10000]} // opcional
+     colors={["#f2f0f7","#dadaeb","#bcbddc","#9e9ac8","#756bb1","#54278f"]} // opcional
+  />
+    </div>
+  </section>
     </div>
   );
 }

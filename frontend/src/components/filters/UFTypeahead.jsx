@@ -46,7 +46,7 @@ export default function UFTypeahead({ value, onSelect }) {
 
   return (
     <div ref={boxRef} className="relative">
-      <label className="label">UF (Solr)</label>
+      <label className="label">UF</label>
       <input
         value={query}
         onChange={onChange}
@@ -57,7 +57,7 @@ export default function UFTypeahead({ value, onSelect }) {
       {open && (
         <div className="absolute z-10 mt-1 w-full rounded-lg border border-zinc-200/60 dark:border-white/10 bg-white dark:bg-zinc-900 shadow">
           {opts.length === 0 && (
-            <div className="px-3 py-2 text-sm text-zinc-500">Sem resultados</div>
+            <div className="px-3 py-2 text-sm text-zinc-900">Sem resultados</div>
           )}
           {opts.map((it) => (
             <button

@@ -12,7 +12,7 @@ export default function ThemeToggle() {
       title="Alternar tema"
     >
       <span className="text-lg">{isDark ? "🌘" : "🌤️"}</span>
-      <span>{isDark ? "Dark" : "Light"}</span>
+      <span>{isDark ? "Escuro" : "Claro"}</span>
     </button>
   );
 }

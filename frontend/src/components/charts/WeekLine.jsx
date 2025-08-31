@@ -3,6 +3,7 @@ import {
   Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend,
 } from "chart.js";
 import { formatDateBR } from "../../services/format.js";
+import "../../styles/index.css";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
@@ -16,12 +17,14 @@ export default function WeekLine({ points }) {
         data: points.map(p => p.casos),
         tension: 0.25,
         fill: false,
+        backgroundColor: 'rgba(104, 10, 255, 0.74)',
       },
       {
         label: "Óbitos",
         data: points.map(p => p.obitos),
         tension: 0.25,
         fill: false,
+        backgroundColor: 'rgba(255, 0, 0, 0.75)'
       },
     ],
   };

@@ -64,6 +64,21 @@ else:
     print("[entrypoint] ETL não necessário.")
 PY
 
-# Se o ETL não “tomou” o processo acima (os.execvp), seguimos para o gunicorn:
+# Configura Solr para estados
+echo "[entrypoint] Configurando Solr para estados..."
+python - <<'PY'
+import os, sys
+os.environ.setdefault("PYTHONPATH", "/app")
+try:
+    from scripts.setup_solr_estados import main
+    if main():
+        print("[entrypoint] Solr configurado com sucesso!")
+    else:
+        print("[entrypoint] Erro na configuração do Solr, mas continuando...")
+except Exception as e:
+    print(f"[entrypoint] Erro ao configurar Solr: {e}, mas continuando...")
+PY
+
+# Se o ETL não "tomou" o processo acima (os.execvp), seguimos para o gunicorn:
 echo "[entrypoint] Subindo gunicorn..."
 exec gunicorn -w "${WORKERS}" -b "${BIND_ADDR}" wsgi:app

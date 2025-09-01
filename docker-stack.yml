@@ -1,0 +1,91 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dengue_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      retries: 15
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == db
+      restart_policy:
+        condition: on-failure
+
+  solr:
+    image: solr:9
+    command: ["solr-precreate", "dengue"]
+    ports:
+      - "8983:8983"
+    volumes:
+      - solr_data:/var/solr
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == combo   
+      restart_policy:
+        condition: on-failure
+
+  api:
+    image: tcc-vigilanciainteligente-api:latest
+    environment:
+      FLASK_ENV: ${FLASK_ENV:-production}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://postgres:postgres@db:5432/dengue_db}
+      SOLR_URL: ${SOLR_URL:-http://solr:8983/solr/dengue}
+      CSV_PATH: /app/data/DENGBR25.csv
+    volumes:
+      - ./data:/app/data:ro
+    deploy:
+      replicas: 4
+      placement:
+        constraints:
+          - node.labels.compute == true
+        max_replicas_per_node: 1
+      update_config:
+        order: start-first
+        parallelism: 1
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  frontend:
+    image: tcc-vigilanciainteligente-frontend:latest
+    ports:
+      - "80:80"
+    deploy:
+      replicas: 2
+      placement:
+        constraints:
+          - node.labels.role == combo
+        max_replicas_per_node: 1
+      update_config:
+        order: start-first
+        parallelism: 1
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+volumes:
+  pgdata:
+  solr_data:

@@ -127,7 +127,7 @@ export default function Dashboard() {
       {/* Mapa coroplético por estado */}
   <section className="rounded-xl border border-zinc-200/70 dark:border-white/10 bg-white dark:bg-zinc-900 p-4 shadow-sm">
     <div className="mb-3 text-sm text-zinc-900 dark:text-zinc-400">
-      Distribuição de Casos por Estado
+      Distribuição de Casos Totais por Estado
     </div>
     <div style={{ width: "100%", height: "600px" }}>
       <BrazilChoroplethRSM

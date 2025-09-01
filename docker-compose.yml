@@ -16,11 +16,7 @@ services:
       interval: 10s
       retries: 15
 
-  redis:
-    image: redis:7-alpine
-    container_name: tcc_epi_redis
-    ports:
-      - "6379:6379"
+  
 
   solr:
     image: solr:9
@@ -28,6 +24,9 @@ services:
     command: ["solr-precreate", "dengue"]
     ports:
       - "8983:8983"
+    volumes:
+      - solr_data:/var/solr
+    
 
   api:
     build:
@@ -39,20 +38,32 @@ services:
     environment:
       FLASK_ENV: ${FLASK_ENV:-production}
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://postgres:postgres@db:5432/dengue_db}
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       SOLR_URL: ${SOLR_URL:-http://solr:8983/solr/dengue}
       CSV_PATH: /app/data/DENGBR25.csv
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_started
       solr:
         condition: service_started
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     volumes:
       - ./data:/app/data:ro
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tcc_epi_frontend
+    ports:
+      - "80:80" 
+    depends_on:
+      - api
+
+
 volumes:
   pgdata:
+  solr_data:
+
+
+  
